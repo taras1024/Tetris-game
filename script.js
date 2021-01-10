@@ -5,6 +5,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const height = 20;
     let currentPosition = 4;
 
+    //=========assign functions to keycodes==========
+    function control(e) {
+        if(e.keyCode === 39) {
+            moveRight();
+        } else if (e.keyCode === 38) {
+            rotate();
+        } else if (e.keyCode === 37) {
+            moveLeft();
+        } else if (e.keyCode === 40) {
+            moveDown();
+        }
+    }
+
+    document.addEventListener('keyup', control);
 
     //============The Tetrominoes============
     const lTetromino = [
@@ -62,5 +76,48 @@ document.addEventListener('DOMContentLoaded', () => {
             squares[currentPosition + index].classList.remove('block')
         ))
     }
+
+    //==========move down shape===============
+    function moveDown () {
+        undraw();
+        currentPosition = currentPosition += GRID_WIDTH;
+        draw();
+        freeze();
+    }
+
+    //============move right and prevent collisions with shapes moving right=======
+    function moveRight() {
+        undraw();
+        const isAtRightEdge = current.some(index => (currentPosition + index) % GRID_WIDTH === GRID_WIDTH - 1);
+        if (!isAtRightEdge) currentPosition += 1;
+        if(current.some(index => squares[currentPosition + index].classList.contains('block2'))) {
+            currentPosition -= 1;
+        }
+        draw();
+    }
+
+    //============move right and prevent collisions with shapes moving right=======
+    function moveLeft() {
+        undraw();
+        const isAtLeftEdge = current.some(index => (currentPosition + index) % GRID_WIDTH === 0);
+        if(!isAtLeftEdge) currentPosition -= 1;
+        if(current.some(index => squares[currentPosition + index].classList.contains('block2'))) {
+            currentPosition += 1;
+        }
+        draw();
+    }
+    
+    //==========rotate tetromino==========
+    function rotate() {
+        undraw();
+        currentRotation++;
+        if(currentRotation === current.length) {
+            currentRotation = 0;
+        }
+        current = tetrominoes[random][currentRotation];
+        draw();
+
+    }
+
 
 });
